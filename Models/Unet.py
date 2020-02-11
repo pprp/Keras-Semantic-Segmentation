@@ -1,6 +1,7 @@
 #coding=utf-8
-from keras.models import *
 from keras.layers import *
+from keras.models import *
+
 
 def Unet(nClasses, input_height=224, input_width=224):
     inputs = Input(shape=(input_height, input_width, 3))
@@ -21,12 +22,12 @@ def Unet(nClasses, input_height=224, input_width=224):
     conv3 = (Activation('relu'))(conv3)
     pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
     # 28x28
-    conv4 = Conv2D(256, (3, 3),  padding='same')(pool3)
+    conv4 = Conv2D(256, (3, 3), padding='same')(pool3)
     conv4 = BatchNormalization()(conv4)
     conv1 = (Activation('relu'))(conv4)
     pool4 = MaxPooling2D(pool_size=(2, 2))(conv4)
     # 14x14
-    
+
     o = Conv2D(512, (3, 3), padding='same')(pool4)
     o = BatchNormalization()(o)
     # decode
@@ -50,13 +51,14 @@ def Unet(nClasses, input_height=224, input_width=224):
     o = (Activation('relu'))(o)
 
     o = Conv2D(nClasses, (3, 3), padding='same')(o)
-    
+
     outputHeight = Model(inputs, o).output_shape[1]
     outputWidth = Model(inputs, o).output_shape[2]
-    o = (Reshape((outputHeight*outputWidth, nClasses)))(o)
+    o = (Reshape((outputHeight * outputWidth, nClasses)))(o)
     o = Activation('softmax')(o)
 
     model = Model(input=inputs, output=o)
     model.outputHeight = outputHeight
     model.outputWidth = outputWidth
+    
     return model

@@ -1,18 +1,18 @@
 #coding=utf-8
-import keras
 import argparse
-import data
 import glob
+import os
+
+import keras
+from keras.callbacks import (CSVLogger, EarlyStopping, ModelCheckpoint,
+                             ReduceLROnPlateau)
+
+import data
 import Models
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau, CSVLogger, ModelCheckpoint
-from Models import ENet
-from Models import FCN8
-from Models import Segnet
-from Models import Unet
-from Models import PSPNet
-from Models import ICNet
-from Models import MobileNetUnet
-from Models import MobileNetFCN8
+from Models import (FCN8, ENet, ICNet, MobileNetFCN8, MobileNetUnet, PSPNet,
+                    Segnet, Unet)
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--train_images", type=str, default="data/train_image/")

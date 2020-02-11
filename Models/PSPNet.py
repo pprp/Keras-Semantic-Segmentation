@@ -1,20 +1,26 @@
 #coding=utf-8
-from keras.models import *
-from keras.layers import *
 import keras.backend as K
 import tensorflow as tf
+from keras.layers import *
+from keras.models import *
 
 
 def pool_block(inp, pool_factor):
     h = K.int_shape(inp)[1]
     w = K.int_shape(inp)[2]
-    pool_size = strides = [int(np.round( float(h) / pool_factor)), int(np.round( float(w)/ pool_factor))]
+    pool_size = strides = [
+        int(np.round(float(h) / pool_factor)),
+        int(np.round(float(w) / pool_factor))
+    ]
     x = AveragePooling2D(pool_size, strides=strides, padding='same')(inp)
     x = Conv2D(256, (1, 1), padding='same', activation='relu')(x)
     x = BatchNormalization()(x)
-    x = Lambda(lambda x: tf.image.resize_bilinear(x, size=(int(x.shape[1])*strides[0], int(x.shape[2])*strides[1])))(x)
+    x = Lambda(lambda x: tf.image.resize_bilinear(
+        x, size=(int(x.shape[1]) * strides[0], int(x.shape[2]) * strides[1])))(
+            x)
     x = Conv2D(256, (1, 1), padding='same', activation='relu')(x)
     return x
+
 
 def PSPNet(nClasses, input_width=384, input_height=384):
     assert input_height % 192 == 0
@@ -54,7 +60,8 @@ def PSPNet(nClasses, input_width=384, input_height=384):
     o = Conv2D(256, (3, 3), activation='relu', padding='same')(o)
     o = BatchNormalization()(o)
 
-    o = Lambda(lambda x: tf.image.resize_bilinear(x, size=(int(x.shape[1])*8, int(x.shape[2])*8)))(x)
+    o = Lambda(lambda x: tf.image.resize_bilinear(
+        x, size=(int(x.shape[1]) * 8, int(x.shape[2]) * 8)))(x)
 
     o = Conv2D(nClasses, (1, 1), padding='same')(o)
     o_shape = Model(inputs, o).output_shape
@@ -62,11 +69,10 @@ def PSPNet(nClasses, input_width=384, input_height=384):
     outputWidth = o_shape[2]
     print(outputHeight)
     print(outputWidth)
-    o = (Reshape((outputHeight*outputWidth, nClasses)))(o)
+    o = (Reshape((outputHeight * outputWidth, nClasses)))(o)
     o = (Activation('softmax'))(o)
     model = Model(inputs, o)
     model.outputWidth = outputWidth
     model.outputHeight = outputHeight
 
     return model
-

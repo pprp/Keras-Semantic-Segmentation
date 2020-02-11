@@ -1,21 +1,17 @@
 #coding=utf-8
+import argparse
 import glob
+import itertools
+import random
+
 import cv2
 import numpy as np
-import random
-import data
-import argparse
-import itertools
-import Models
-from Models import ENet
-from Models import FCN8
-from Models import Segnet
-from Models import Unet
-from Models import PSPNet
-from Models import ICNet
-from Models import MobileNetUnet
-from Models import MobileNetFCN8
 from keras.models import load_model
+
+import data
+import Models
+from Models import (FCN8, ENet, ICNet, MobileNetFCN8, MobileNetUnet, PSPNet,
+                    Segnet, Unet)
 
 EPS = 1e-12
 
