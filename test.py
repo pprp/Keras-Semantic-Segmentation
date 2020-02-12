@@ -20,7 +20,7 @@ parser.add_argument("--test_images", type=str, default="data/test/")
 parser.add_argument("--output_path", type=str, default="data/output/")
 parser.add_argument("--weights_path",
                     type=str,
-                    default="weights/unet.18-0.856895.hdf5")
+                    default="weights/unet.50-0.996550.hdf5")
 parser.add_argument("--model_name", type=str, default="unet")
 parser.add_argument("--input_height", type=int, default=224)
 parser.add_argument("--input_width", type=int, default=224)
@@ -66,8 +66,8 @@ model = modelFN(n_class, input_height=input_height, input_width=input_width)
 model.load_weights(save_weights_path)
 output_height = model.outputHeight
 output_width = model.outputWidth
-print(output_height)
-print(output_width)
+# print(output_height)
+# print(output_width)
 
 # look up test images
 images = glob.glob(images_path + "*.jpg") + glob.glob(
@@ -119,7 +119,7 @@ if iou:
         img_path, seg_path = next(zipped)
         # get origin h, w
         img = data.getImage(img_path, input_width, input_height, image_init)
-        gt = data.getLable(seg_path, n_class, output_width, output_height)
+        gt = data.getLabel(seg_path, n_class, output_width, output_height)
         pr = model.predict(np.array([img]))[0]
         gt = gt.argmax(axis=-1)
         pr = pr.argmax(axis=-1)

@@ -23,7 +23,7 @@ def getImage(path, width, height, imgNorm="sub_mean"):
     return img
 
 
-def getLable(path, n_classes, width, height):
+def getLabel(path, n_classes, width, height):
     seg_labels = np.zeros((height, width, n_classes))
     img = cv2.imread(path, 1)
     img = cv2.resize(img, (width, height), interpolation=cv2.INTER_NEAREST)
@@ -37,21 +37,28 @@ def getLable(path, n_classes, width, height):
 def imageSegmentationGenerator(images_path, segs_path, batch_size, n_classes,
                                input_height, input_width, output_height,
                                output_width, image_init):
+    
     assert images_path[-1] == '/'
     assert segs_path[-1] == '/'
-    images = glob.glob(images_path + "*.jpg") + glob.glob(
-        images_path + "*.png") + glob.glob(images_path + "*.jpeg")
+
+    images = glob.glob(images_path + "*.jpg") + \
+             glob.glob(images_path + "*.png") + \
+             glob.glob(images_path + "*.jpeg")
     images.sort()
-    segmentations = glob.glob(segs_path + "*.jpg") + glob.glob(
-        segs_path + "*.png") + glob.glob(segs_path + "*.jpeg")
+
+    segmentations = glob.glob(segs_path + "*.jpg") + \
+                    glob.glob(segs_path + "*.png") + \
+                    glob.glob(segs_path + "*.jpeg")
     segmentations.sort()
+
     assert len(images) == len(segmentations)
     zipped = itertools.cycle(zip(images, segmentations))
+
     while True:
         X = []
         Y = []
         for _ in range(batch_size):
             im, seg = next(zipped)
             X.append(getImage(im, input_width, input_height, image_init))
-            Y.append(getLable(seg, n_classes, output_width, output_height))
+            Y.append(getLabel(seg, n_classes, output_width, output_height))
         yield np.array(X), np.array(Y)

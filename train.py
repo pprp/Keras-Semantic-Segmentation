@@ -75,6 +75,7 @@ modelFns = {
     'mobilenet_fcn8': Models.MobileNetFCN8.MobileNetFCN8
 }
 modelFN = modelFns[model_name]
+
 model = modelFN(n_classes, input_height=input_height, input_width=input_width)
 
 # 统计一下训练集/验证集样本数，确定每一个epoch需要训练的iter
@@ -106,6 +107,7 @@ model.compile(loss='categorical_crossentropy',
 
 if len(load_weights) > 0:
     model.load_weights(load_weights)
+
 print("Model output shape : ", model.output_shape)
 
 output_height = model.outputHeight
