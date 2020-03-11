@@ -2,3 +2,5 @@
 *.pyc
 *.hdf5
 *.json
+*.jpg
+*.png

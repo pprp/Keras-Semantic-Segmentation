@@ -27,9 +27,14 @@ def getLabel(path, n_classes, width, height):
     seg_labels = np.zeros((height, width, n_classes))
     img = cv2.imread(path, 1)
     img = cv2.resize(img, (width, height), interpolation=cv2.INTER_NEAREST)
+
+    img[img == 255] = 1
+
     img = img[:, :, 0]
+
     for c in range(n_classes):
         seg_labels[:, :, c] = (img == c).astype(int)
+
     seg_labels = np.reshape(seg_labels, (width * height, n_classes))
     return seg_labels
 
@@ -37,7 +42,7 @@ def getLabel(path, n_classes, width, height):
 def imageSegmentationGenerator(images_path, segs_path, batch_size, n_classes,
                                input_height, input_width, output_height,
                                output_width, image_init):
-    
+
     assert images_path[-1] == '/'
     assert segs_path[-1] == '/'
 

@@ -2,6 +2,7 @@
 import argparse
 import glob
 import itertools
+import os
 import random
 
 import cv2
@@ -13,6 +14,8 @@ import Models
 from Models import (FCN8, ENet, ICNet, MobileNetFCN8, MobileNetUnet, PSPNet,
                     Segnet, Unet)
 
+os.environ['CUDA_VISIBLE_DEVICES'] = "1"
+
 EPS = 1e-12
 
 parser = argparse.ArgumentParser()
@@ -20,14 +23,14 @@ parser.add_argument("--test_images", type=str, default="data/test/")
 parser.add_argument("--output_path", type=str, default="data/output/")
 parser.add_argument("--weights_path",
                     type=str,
-                    default="weights/unet.50-0.996550.hdf5")
+                    default="weights/unet.49-0.995988.hdf5")
 parser.add_argument("--model_name", type=str, default="unet")
-parser.add_argument("--input_height", type=int, default=224)
-parser.add_argument("--input_width", type=int, default=224)
+parser.add_argument("--input_height", type=int, default=256)
+parser.add_argument("--input_width", type=int, default=256)
 parser.add_argument("--classes", type=int, default=2)
 parser.add_argument("--mIOU", type=bool, default=False)
-parser.add_argument("--val_images", type=str, default="data/val_image/")
-parser.add_argument("--val_annotations", type=str, default="data/val_label/")
+parser.add_argument("--val_images", type=str, default="data/test_image/")
+parser.add_argument("--val_annotations", type=str, default="data/test_label/")
 parser.add_argument("--image_init", type=str, default="sub_mean")
 
 args = parser.parse_args()
@@ -77,7 +80,7 @@ images.sort()
 cnt = 0
 
 for imgName in images:
-    outName = output_path + str("%d.jpg" % cnt)
+    outName = output_path + str("%s.jpg" % os.path.basename(imgName).split(".")[0])
     origin_img = cv2.imread(imgName, 1)
     origin_h = origin_img.shape[0]
     origin_w = origin_img.shape[1]

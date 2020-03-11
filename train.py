@@ -10,9 +10,10 @@ from keras.callbacks import (CSVLogger, EarlyStopping, ModelCheckpoint,
 import data
 import Models
 from Models import (FCN8, ENet, ICNet, MobileNetFCN8, MobileNetUnet, PSPNet,
-                    Segnet, Unet)
+                    Segnet, Unet,SEUNet)
 
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--train_images", type=str, default="data/train_image/")
@@ -20,17 +21,17 @@ parser.add_argument("--train_annotations",
                     type=str,
                     default="data/train_label/")
 parser.add_argument("--n_classes", type=int, default=2)
-parser.add_argument("--input_height", type=int, default=224)
-parser.add_argument("--input_width", type=int, default=224)
+parser.add_argument("--input_height", type=int, default=256)
+parser.add_argument("--input_width", type=int, default=256)
 parser.add_argument('--validate', type=bool, default=True)
-parser.add_argument("--val_images", type=str, default="data/val_image/")
-parser.add_argument("--val_annotations", type=str, default="data/val_label/")
+parser.add_argument("--val_images", type=str, default="data/test_image/")
+parser.add_argument("--val_annotations", type=str, default="data/test_label/")
 parser.add_argument("--epochs", type=int, default=50)
-parser.add_argument("--train_batch_size", type=int, default=2)
+parser.add_argument("--train_batch_size", type=int, default=4)
 parser.add_argument("--val_batch_size", type=int, default=4)
 parser.add_argument("--train_save_path", type=str, default="weights/unet")
 parser.add_argument("--resume", type=str, default="")
-parser.add_argument("--model_name", type=str, default="unet")
+parser.add_argument("--model_name", type=str, default="seunet")
 parser.add_argument("--optimizer_name", type=str, default="sgd")
 parser.add_argument("--image_init", type=str, default="sub_mean")
 
@@ -72,7 +73,8 @@ modelFns = {
     'pspnet': Models.PSPNet.PSPNet,
     'icnet': Models.ICNet.ICNet,
     'mobilenet_unet': Models.MobileNetUnet.MobileNetUnet,
-    'mobilenet_fcn8': Models.MobileNetFCN8.MobileNetFCN8
+    'mobilenet_fcn8': Models.MobileNetFCN8.MobileNetFCN8,
+    'seunet':Models.SEUNet.SEUnet,
 }
 modelFN = modelFns[model_name]
 
