@@ -3,6 +3,8 @@ import argparse
 import glob
 import os
 
+import tensorflow as tf
+
 import keras
 from keras.callbacks import (CSVLogger, EarlyStopping, ModelCheckpoint,
                              ReduceLROnPlateau)
@@ -10,10 +12,13 @@ from keras.callbacks import (CSVLogger, EarlyStopping, ModelCheckpoint,
 import data
 import Models
 from Models import (FCN8, ENet, ICNet, MobileNetFCN8, MobileNetUnet, PSPNet,
-                    Segnet, Unet,SEUNet)
-
+                    Segnet, Unet, SEUNet)
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--train_images", type=str, default="data/train_image/")
@@ -74,7 +79,7 @@ modelFns = {
     'icnet': Models.ICNet.ICNet,
     'mobilenet_unet': Models.MobileNetUnet.MobileNetUnet,
     'mobilenet_fcn8': Models.MobileNetFCN8.MobileNetFCN8,
-    'seunet':Models.SEUNet.SEUnet,
+    'seunet': Models.SEUNet.SEUnet
 }
 modelFN = modelFns[model_name]
 
@@ -101,6 +106,7 @@ model_checkpoint = ModelCheckpoint(model_names,
                                    monitor='loss',
                                    save_best_only=True,
                                    save_weights_only=False)
+
 call_backs = [model_checkpoint, csv_logger, early_stop, reduce_lr]
 
 model.compile(loss='categorical_crossentropy',

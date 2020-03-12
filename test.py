@@ -12,7 +12,7 @@ from keras.models import load_model
 import data
 import Models
 from Models import (FCN8, ENet, ICNet, MobileNetFCN8, MobileNetUnet, PSPNet,
-                    Segnet, Unet)
+                    Segnet, Unet,SEUNet)
 
 os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 
@@ -23,12 +23,12 @@ parser.add_argument("--test_images", type=str, default="data/test/")
 parser.add_argument("--output_path", type=str, default="data/output/")
 parser.add_argument("--weights_path",
                     type=str,
-                    default="weights/unet.49-0.995988.hdf5")
-parser.add_argument("--model_name", type=str, default="unet")
+                    default="weights/unet.19-0.965792.hdf5")
+parser.add_argument("--model_name", type=str, default="seunet")
 parser.add_argument("--input_height", type=int, default=256)
 parser.add_argument("--input_width", type=int, default=256)
 parser.add_argument("--classes", type=int, default=2)
-parser.add_argument("--mIOU", type=bool, default=False)
+parser.add_argument("--mIOU", type=bool, default=True)
 parser.add_argument("--val_images", type=str, default="data/test_image/")
 parser.add_argument("--val_annotations", type=str, default="data/test_label/")
 parser.add_argument("--image_init", type=str, default="sub_mean")
@@ -60,7 +60,8 @@ modelFns = {
     'pspnet': Models.PSPNet.PSPNet,
     'icnet': Models.ICNet.ICNet,
     'mobilenet_unet': Models.MobileNetUnet.MobileNetUnet,
-    'mobilenet_fcn8': Models.MobileNetFCN8.MobileNetFCN8
+    'mobilenet_fcn8': Models.MobileNetFCN8.MobileNetFCN8,
+    'seunet': Models.SEUNet.SEUnet
 }
 
 modelFN = modelFns[model_name]
